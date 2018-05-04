@@ -218,7 +218,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         let borderColor = dataSet.barBorderColor
         let drawBorder = borderWidth > 0.0
         
-        let roundingCorners = UIRectCorner.bottomLeft
+        var roundingCorners = UIRectCorner.bottomLeft
         
         context.saveGState()
         
@@ -322,6 +322,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             
             if dataProvider.isDrawRoundedBarEnabled
             {
+                roundingCorners = dataSet.barRoundingCorners
                 context.setStrokeColor(borderColor.cgColor)
                 context.setLineWidth(borderWidth)
                 context.stroke(barRect)
