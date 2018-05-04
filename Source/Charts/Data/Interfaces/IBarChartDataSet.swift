@@ -12,6 +12,9 @@
 import Foundation
 import CoreGraphics
 
+#if !os(OSX)
+    import UIKit
+#endif
 @objc
 public protocol IBarChartDataSet: IBarLineScatterCandleBubbleChartDataSet
 {
@@ -39,4 +42,7 @@ public protocol IBarChartDataSet: IBarLineScatterCandleBubbleChartDataSet
     
     /// array of labels used to describe the different values of the stacked bars
     var stackLabels: [String] { get set }
+    
+    var barRoundingCorners: UIRectCorner { get set }
+    
 }

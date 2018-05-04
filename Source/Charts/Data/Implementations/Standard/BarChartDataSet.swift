@@ -15,6 +15,8 @@ import CoreGraphics
 
 open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBarChartDataSet
 {
+    open var barRoundingCorners: UIRectCorner = .allCorners
+    
     private func initialize()
     {
         self.highlightColor = NSUIColor.black

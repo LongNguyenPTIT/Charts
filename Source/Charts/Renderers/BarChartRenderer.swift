@@ -218,6 +218,8 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         let borderColor = dataSet.barBorderColor
         let drawBorder = borderWidth > 0.0
         
+        let roundingCorners = UIRectCorner.bottomLeft
+        
         context.saveGState()
         
         // draw the bar shadow before the values
@@ -309,13 +311,41 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 context.setFillColor(dataSet.color(atIndex: j).cgColor)
             }
             
-            context.fill(barRect)
+//            context.fill(barRect)
+//
+//            if drawBorder
+//            {
+//                context.setStrokeColor(borderColor.cgColor)
+//                context.setLineWidth(borderWidth)
+//                context.stroke(barRect)
+//            }
             
-            if drawBorder
+            if dataProvider.isDrawRoundedBarEnabled
             {
                 context.setStrokeColor(borderColor.cgColor)
                 context.setLineWidth(borderWidth)
                 context.stroke(barRect)
+                let cornerRadius = CGSize(width: barRect.width / 2.0, height: barRect.width / 2.0)
+                let bezierPath = UIBezierPath(roundedRect: barRect, byRoundingCorners: roundingCorners, cornerRadii: cornerRadius)
+                context.addPath(bezierPath.cgPath)
+                context.fillPath()
+                if drawBorder
+                {
+                    bezierPath.lineWidth = borderWidth
+                    borderColor.setStroke()
+                    bezierPath.stroke()
+                }
+            }
+            else
+            {
+                context.fill(barRect)
+                
+                if drawBorder
+                {
+                    context.setStrokeColor(borderColor.cgColor)
+                    context.setLineWidth(borderWidth)
+                    context.stroke(barRect)
+                }
             }
         }
         
@@ -634,6 +664,8 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 set.isHighlightEnabled
                 else { continue }
             
+            let roundingCorners = set.barRoundingCorners
+            
             if let e = set.entryForXValue(high.x, closestToY: high.y) as? BarChartDataEntry
             {
                 if !isInBoundsX(entry: e, dataSet: set)
@@ -674,9 +706,18 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 
                 prepareBarHighlight(x: e.x, y1: y1, y2: y2, barWidthHalf: barData.barWidth / 2.0, trans: trans, rect: &barRect)
                 
-                setHighlightDrawPos(highlight: high, barRect: barRect)
                 
-                context.fill(barRect)
+                if dataProvider.isDrawRoundedBarEnabled
+                {
+                    let cornerRadius = CGSize(width: barRect.width / 2.0, height: barRect.width / 2.0)
+                    let bezierPath = UIBezierPath(roundedRect: barRect, byRoundingCorners: roundingCorners, cornerRadii: cornerRadius)
+                    context.addPath(bezierPath.cgPath)
+                    context.fillPath()
+                }
+                else
+                {
+                    context.fill(barRect)
+                }
             }
         }
         
